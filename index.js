@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Login 去除登录弹窗👻
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world! 删除烦人的登录弹窗
 // @author       tanzz
 // @match        *://*.zhihu.com/*
@@ -58,7 +58,6 @@ const banner = `
     'use strict';
 
     // Your code here...
-    log(banner);
     common(1, 10);
     log('运行完成');
 })();
