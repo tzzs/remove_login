@@ -10,16 +10,6 @@
 // @license      MIT
 // ==/UserScript==
 
-(function () {
-    'use strict';
-
-    // Your code here...
-    log(banner);
-    common(1, 10);
-    log('运行完成');
-})();
-
-
 const banner = `
           _____                    _____                    _____                   _______                   _____                    _____
          /\    \                  /\    \                  /\    \                 /::\    \                 /\    \                  /\    \
@@ -63,6 +53,16 @@ const banner = `
         \::/    /         ~~                      \::/____/                \::/    /                \::/    /
          \/____/                                                            \/____/                  \/____/
 `
+
+(function () {
+    'use strict';
+
+    // Your code here...
+    log(banner);
+    common(1, 10);
+    log('运行完成');
+})();
+
 
 function common(type, times) {
     let interval = setInterval(function () {
