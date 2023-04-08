@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Login 去除登录弹窗👻
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.2.1
 // @description  try to take over the world! 删除烦人的登录弹窗
 // @author       tanzz
 // @match        *://*.zhihu.com/*
@@ -32,15 +32,10 @@ function common(type, times) {
         }
 
         if (type === 1) {
-            let list = [
-                '.Modal-wrapper.undefined.Modal-enter-done'
-            ]
-            for (var k = 0; k < list.length; k++) {
-                var elements = document.querySelectorAll(list[k]);
-                for (var i = 0; i < elements.length; i++) {
-                    elements[i].parentNode.removeChild(elements[i]);
-                }
-            }
+            // [zhihu] close login popup
+            document.querySelector("body > div:nth-child(40) > div > div > div > div.Modal.Modal--default.signFlowModal > button").click();
+            // [zhihu] close login popup on the right bottom corner
+            document.querySelector("body > div:nth-child(40) > div > div > div > svg").click();
         }
 
         times--;
@@ -51,4 +46,3 @@ function common(type, times) {
 function log(msg) {
     console.log("[REMOVE_LOGIN] " + msg);
 }
-
