@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Login 去除登录弹窗👻
 // @namespace    http://tampermonkey.net/
-// @version      0.2.2
+// @version      0.2.3
 // @description  try to take over the world! 删除烦人的登录弹窗
 // @author       tanzz
 // @match        *://*.zhihu.com/*
@@ -49,14 +49,25 @@ function common(type, times) {
                 }
             }
 
+            const zhihuLoginHtml =
+                '<a class="Button Button--primary Button--blue css-jmxm1g" href="https://www.zhihu.com/signin" target="_blank">登录/注册</a>';
+
             // [zhihu] delete login button hover event listener //*[@id="root"]/div/div[2]/header/div[2]/div[2]/div[2]/div/button
             const loginBtn = document.querySelector(
                 "#root > div > div:nth-child(2) > header > div.AppHeader-inner.css-l2ygoj > div.AppHeader-userInfo > div.AppHeader-profile"
             );
             if (loginBtn) {
-                loginBtn.innerHTML =
-                    '<a class="Button Button--primary Button--blue css-jmxm1g" href="https://www.zhihu.com/signin" target="_blank">登录/注册</a>';
+                loginBtn.innerHTML = zhihuLoginHtml;
             }
+
+            // [zhihu-zhuanlan] delete login popup in the page of zhuanlan
+            execWithXPath("/html/body/div[4]/div/div/div/div[2]/button", "click");
+            // [zhihu-zhuanlan] login button
+            execWithXPath('//*[@id="root"]/div/main/div/div[1]/div/div/div[2]', "innerHTML", zhihuLoginHtml);
+            // [zhihu-zhuanlan] login button popup
+            execWithXPath('//div[contains(@class, "css-ysn1om")]', "remove");
+            // [zhihu-zhuanlan] close login popup on the right bottom corner
+            execWithXPath("/html/body/div[5]/div/div", "remove");
         }
 
         times--;
@@ -71,18 +82,32 @@ function log(msg) {
  * get element by xpath
  * @param {String} XPath xpath
  */
-function getElement(
-    XPath,
-    contextNode = document,
-    resultType = XPathResult.FIRST_ORDERED_NODE_TYPE
-) {
+function getElement(XPath, contextNode = document, resultType = XPathResult.FIRST_ORDERED_NODE_TYPE) {
     // reference: https://developer.mozilla.org/zh-CN/docs/Web/API/Document/evaluate
-    const result = document.evaluate(
-        XPath,
-        contextNode,
-        null,
-        resultType,
-        null
-    );
-    return result.singleNodeValue;
+    try {
+        const result = document.evaluate(XPath, contextNode, null, resultType, null);
+        return result.singleNodeValue;
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+/**
+ * execute operation with xpath
+ * @param {String} XPath xpath expression
+ * @param {String} type operation type
+ * @param  {...any} args
+ */
+function execWithXPath(XPath, type, ...args) {
+    const element = getElement(XPath);
+    if (element) {
+        if (type === "click") {
+            element.click();
+        } else if (type === "remove") {
+            element.parentNode.removeChild(element);
+        } else if (type === "innerHTML") {
+            element.innerHTML = args[0];
+        }
+    }
 }
